@@ -17,7 +17,6 @@ import (
 	"github.com/wizzomafizzo/tapto/pkg/daemon/api/websocket"
 	"github.com/wizzomafizzo/tapto/pkg/daemon/state"
 	"github.com/wizzomafizzo/tapto/pkg/database"
-	"github.com/wizzomafizzo/tapto/pkg/platforms/mister"
 	"github.com/wizzomafizzo/tapto/pkg/utils"
 )
 
@@ -26,9 +25,13 @@ const (
 	SubStreamEvents = "events"
 )
 
-func setupWs(cfg *config.UserConfig, st *state.State, tr *mister.Tracker) {
+func setupWs(
+	cfg *config.UserConfig,
+	st *state.State,
+	//tr *mister.Tracker,
+) {
 	send := func() {
-		status, err := json.Marshal(newStatus(cfg, st, tr))
+		status, err := json.Marshal(newStatus(cfg, st))
 		if err != nil {
 			log.Error().Err(err).Msg("error encoding status")
 			return
@@ -43,11 +46,11 @@ func setupWs(cfg *config.UserConfig, st *state.State, tr *mister.Tracker) {
 	}
 	st.SetUpdateHook(&stHook)
 
-	trHook := func() {
-		log.Debug().Msg("tracker update hook")
-		send()
-	}
-	tr.SetEventHook(&trHook)
+	// trHook := func() {
+	// 	log.Debug().Msg("tracker update hook")
+	// 	send()
+	// }
+	//tr.SetEventHook(&trHook)
 
 	idxHook := func(_ *Index) {
 		log.Debug().Msg("index update hook")
@@ -114,7 +117,7 @@ func RunApiServer(
 	st *state.State,
 	tq *state.TokenQueue,
 	db *database.Database,
-	tr *mister.Tracker,
+	//tr *mister.Tracker,
 ) {
 	r := chi.NewRouter()
 
@@ -134,7 +137,7 @@ func RunApiServer(
 		r.Use(render.SetContentType(render.ContentTypeJSON))
 		r.Use(middleware.Timeout(60 * time.Second))
 
-		r.Get("/status", handleStatus(cfg, st, tr))
+		r.Get("/status", handleStatus(cfg, st))
 
 		r.Post("/launch", handleLaunch(st, tq))
 		r.Get("/launch/*", handleLaunchBasic(st, tq))
@@ -159,10 +162,10 @@ func RunApiServer(
 		r.Post("/settings/index/games", handleIndexGames(cfg))
 	})
 
-	setupWs(cfg, st, tr)
+	setupWs(cfg, st)
 	r.HandleFunc("/api/v1/ws", websocket.Handle(
 		func() []string {
-			status, err := json.Marshal(newStatus(cfg, st, tr))
+			status, err := json.Marshal(newStatus(cfg, st))
 			if err != nil {
 				log.Error().Err(err).Msg("error encoding status")
 			}

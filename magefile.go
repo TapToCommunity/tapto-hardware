@@ -70,6 +70,12 @@ var apps = []app{
 		ldFlags:      "-lnfc -lusb -lcurses",
 		releaseFiles: []string{filepath.Join(cwd, "scripts", "taptui", "taptui.sh")},
 	},
+	{
+		name:    "tapto-linux",
+		path:    filepath.Join(cwd, "cmd", "linux"),
+		bin:     "tapto",
+		ldFlags: "-lnfc -lusb -lcurses",
+	},
 }
 
 func getApp(name string) *app {

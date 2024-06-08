@@ -28,8 +28,6 @@ import (
 	"strings"
 	"time"
 
-	"golang.org/x/exp/slices"
-
 	"github.com/rs/zerolog/log"
 	"github.com/wizzomafizzo/mrext/pkg/input"
 	"github.com/wizzomafizzo/tapto/pkg/config"
@@ -58,11 +56,12 @@ func writeScanResult(card state.Token) error {
 }
 
 func inExitGameBlocklist(cfg *config.UserConfig) bool {
-	var blocklist []string
-	for _, v := range cfg.GetExitGameBlocklist() {
-		blocklist = append(blocklist, strings.ToLower(v))
-	}
-	return slices.Contains(blocklist, strings.ToLower(mister.GetActiveCoreName()))
+	return false
+	// var blocklist []string
+	// for _, v := range cfg.GetExitGameBlocklist() {
+	// 	blocklist = append(blocklist, strings.ToLower(v))
+	// }
+	// return slices.Contains(blocklist, strings.ToLower(mister.GetActiveCoreName()))
 }
 
 func checkMappingUid(m database.Mapping, t state.Token) bool {
@@ -285,35 +284,35 @@ func StartDaemon(cfg *config.UserConfig) (func() error, error) {
 	}
 
 	// TODO: this is platform specific
-	tr, stopTr, err := mister.StartTracker(*mister.UserConfigToMrext(cfg))
+	//tr, stopTr, err := mister.StartTracker(*mister.UserConfigToMrext(cfg))
 
 	// TODO: this is platform specific
-	err = mister.Setup(tr)
-	if err != nil {
-		log.Error().Msgf("error setting up mister platform: %s", err)
-		return nil, err
-	}
+	//err = mister.Setup(tr)
+	//if err != nil {
+	//	log.Error().Msgf("error setting up mister platform: %s", err)
+	//	return nil, err
+	//}
 
-	uids, texts, err := launcher.LoadCsvMappings()
-	if err != nil {
-		log.Error().Msgf("error loading mappings: %s", err)
-	} else {
-		st.SetDB(uids, texts)
-	}
+	//uids, texts, err := launcher.LoadCsvMappings()
+	//if err != nil {
+	//	log.Error().Msgf("error loading mappings: %s", err)
+	//} else {
+	//	st.SetDB(uids, texts)
+	//}
 
-	closeMappingsWatcher, err := launcher.StartCsvMappingsWatcher(
-		st.GetDBLoadTime,
-		st.SetDB,
-	)
-	if err != nil {
-		log.Error().Msgf("error starting mappings watcher: %s", err)
-	}
+	//closeMappingsWatcher, err := launcher.StartCsvMappingsWatcher(
+	//	st.GetDBLoadTime,
+	//	st.SetDB,
+	//)
+	//if err != nil {
+	//	log.Error().Msgf("error starting mappings watcher: %s", err)
+	//}
 
 	if _, err := os.Stat(mister.DisableLaunchFile); err == nil {
 		st.DisableLauncher()
 	}
 
-	go api.RunApiServer(cfg, st, tq, db, tr)
+	go api.RunApiServer(cfg, st, tq, db)
 	go readerPollLoop(cfg, st, tq, kbd)
 	go processLaunchQueue(cfg, st, tq, db, kbd)
 
@@ -332,14 +331,14 @@ func StartDaemon(cfg *config.UserConfig) (func() error, error) {
 
 		st.StopService()
 
-		err = stopTr()
-		if err != nil {
-			log.Warn().Msgf("error stopping tracker: %s", err)
-		}
+		// err = stopTr()
+		// if err != nil {
+		// 	log.Warn().Msgf("error stopping tracker: %s", err)
+		// }
 
-		if closeMappingsWatcher != nil {
-			return closeMappingsWatcher()
-		}
+		// if closeMappingsWatcher != nil {
+		// 	return closeMappingsWatcher()
+		// }
 		return nil
 	}, nil
 }

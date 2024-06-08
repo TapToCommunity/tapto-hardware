@@ -9,7 +9,6 @@ import (
 
 	"github.com/clausecker/nfc/v2"
 	"github.com/rs/zerolog/log"
-	mrextConfig "github.com/wizzomafizzo/mrext/pkg/config"
 	"github.com/wizzomafizzo/mrext/pkg/input"
 	"github.com/wizzomafizzo/tapto/pkg/config"
 	"github.com/wizzomafizzo/tapto/pkg/daemon/state"
@@ -179,9 +178,9 @@ func shouldExit(
 	st *state.State,
 ) bool {
 	// do not exit from menu, there is nowhere to go anyway
-	if mister.GetActiveCoreName() == mrextConfig.MenuCore {
-		return false
-	}
+	// if mister.GetActiveCoreName() == mrextConfig.MenuCore {
+	// 	return false
+	// }
 
 	// candidateForRemove is true from the moment in which we remove a card
 	if !candidateForRemove || st.GetLastScanned().FromApi || st.IsLauncherDisabled() {
@@ -216,7 +215,7 @@ func readerPollLoop(
 	var lastError time.Time
 	var candidateForRemove bool
 	// keep track of core switch for menu reset
-	var lastCoreName string = mrextConfig.MenuCore
+	// var lastCoreName string = mrextConfig.MenuCore
 
 	playFail := func() {
 		if time.Since(lastError) > 1*time.Second {
@@ -361,15 +360,15 @@ func readerPollLoop(
 			mister.ExitGame()
 			st.SetCurrentlyLoadedSoftware("")
 			continue
-		} else if mister.GetActiveCoreName() == mrextConfig.MenuCore && lastCoreName != mrextConfig.MenuCore {
-			// at any time we are on the current menu we should forget old values if we have anything to clear
-			candidateForRemove = false
-			st.SetCardRemovalTime(time.Time{})
-			st.SetCurrentlyLoadedSoftware("")
+			// } else if mister.GetActiveCoreName() == mrextConfig.MenuCore && lastCoreName != mrextConfig.MenuCore {
+			// 	// at any time we are on the current menu we should forget old values if we have anything to clear
+			// 	candidateForRemove = false
+			// 	st.SetCardRemovalTime(time.Time{})
+			// 	st.SetCurrentlyLoadedSoftware("")
 
 		}
 
-		lastCoreName = mister.GetActiveCoreName()
+		// lastCoreName = mister.GetActiveCoreName()
 
 		// From here we didn't exit a game, but we want short circuit and do nothing if the following happens
 

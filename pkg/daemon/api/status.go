@@ -8,7 +8,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/wizzomafizzo/tapto/pkg/config"
 	"github.com/wizzomafizzo/tapto/pkg/daemon/state"
-	"github.com/wizzomafizzo/tapto/pkg/platforms/mister"
 )
 
 type TokenResponse struct {
@@ -54,7 +53,11 @@ func (sr *StatusResponse) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func newStatus(cfg *config.UserConfig, st *state.State, tr *mister.Tracker) StatusResponse {
+func newStatus(
+	cfg *config.UserConfig,
+	st *state.State,
+	//tr *mister.Tracker,
+) StatusResponse {
 	active := st.GetActiveCard()
 	last := st.GetLastScanned()
 	readerConnected, readerType := st.GetReaderStatus()
@@ -89,11 +92,11 @@ func newStatus(cfg *config.UserConfig, st *state.State, tr *mister.Tracker) Stat
 			TotalFiles:  IndexInstance.TotalFiles,
 		},
 		Playing: PlayingResponse{
-			System:     tr.ActiveSystem,
-			SystemName: tr.ActiveSystemName,
-			Game:       tr.ActiveGameId,
-			GameName:   tr.ActiveGameName,
-			GamePath:   mister.NormalizePath(cfg, tr.ActiveGamePath),
+			//System:     tr.ActiveSystem,
+			//SystemName: tr.ActiveSystemName,
+			//Game:       tr.ActiveGameId,
+			//GameName:   tr.ActiveGameName,
+			//GamePath:   mister.NormalizePath(cfg, tr.ActiveGamePath),
 		},
 	}
 }
@@ -101,12 +104,12 @@ func newStatus(cfg *config.UserConfig, st *state.State, tr *mister.Tracker) Stat
 func handleStatus(
 	cfg *config.UserConfig,
 	st *state.State,
-	tr *mister.Tracker,
+	//tr *mister.Tracker,
 ) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Info().Msg("received status request")
 
-		resp := newStatus(cfg, st, tr)
+		resp := newStatus(cfg, st)
 
 		err := render.Render(w, r, &resp)
 		if err != nil {
