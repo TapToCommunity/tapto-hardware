@@ -43,6 +43,11 @@ var (
 	misterBuildImageName = "tapto/mister-build"
 	misterBuildCache     = filepath.Join(os.TempDir(), "tapto-mister-buildcache")
 	misterModCache       = filepath.Join(os.TempDir(), "tapto-mister-modcache")
+	// docker arm64 build
+	arm64Build          = filepath.Join(cwd, "scripts", "arm64", "build")
+	arm64BuildImageName = "tapto/arm64-build"
+	arm64BuildCache     = filepath.Join(os.TempDir(), "tapto-arm64-buildcache")
+	arm64ModCache       = filepath.Join(os.TempDir(), "tapto-arm64-modcache")
 )
 
 type app struct {
@@ -151,6 +156,48 @@ func Mister(appName string) {
 		"--user",
 		"1000:1000",
 		misterBuildImageName,
+		"mage",
+		"build",
+		appName,
+	}
+
+	if runtime.GOOS == "linux" {
+		args = append([]string{"sudo"}, args...)
+	}
+
+	_ = sh.RunV(args[0], args[1:]...)
+}
+
+func MakeArm64Image() {
+	if runtime.GOOS != "linux" {
+		_ = sh.RunV("docker", "build", "--platform", "linux/arm/v8", "-t", arm64BuildImageName, arm64Build)
+	} else {
+		_ = sh.RunV("sudo", "docker", "build", "--platform", "linux/arm/v8", "-t", arm64BuildImageName, arm64Build)
+	}
+}
+
+func Arm64(appName string) {
+	buildCache := fmt.Sprintf("%s:%s", arm64BuildCache, "/home/build/.cache/go-build")
+	_ = os.Mkdir(arm64BuildCache, 0755)
+
+	modCache := fmt.Sprintf("%s:%s", arm64ModCache, "/home/build/go/pkg/mod")
+	_ = os.Mkdir(arm64ModCache, 0755)
+
+	args := []string{
+		"docker",
+		"run",
+		"--rm",
+		"--platform",
+		"linux/arm/v8",
+		"-v",
+		buildCache,
+		"-v",
+		modCache,
+		"-v",
+		fmt.Sprintf("%s:%s", cwd, "/build"),
+		"--user",
+		"1000:1000",
+		arm64BuildImageName,
 		"mage",
 		"build",
 		appName,
