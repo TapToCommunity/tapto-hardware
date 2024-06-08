@@ -64,7 +64,7 @@ func ReadNtag(pnd nfc.Device) (TagData, error) {
 	log.Debug().Msgf("NTAG has %d blocks", blockCount)
 
 	header, _ := comm(pnd, []byte{READ_COMMAND, byte(0)}, 16)
-	if bytes.Equal(header[9:], AMIIBO_MATCHER) {
+	if len(header) > 10 && bytes.Equal(header[9:], AMIIBO_MATCHER) {
 		log.Info().Msg("found Amiibo")
 		amiibo, _ := comm(pnd, []byte{READ_COMMAND, byte(21)}, 16)
 		amiibo = amiibo[:8]
