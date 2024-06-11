@@ -48,6 +48,7 @@ import (
 var commandMappings = map[string]func(*cmdEnv) error{
 	"launch.system": cmdSystem,
 	"launch.random": cmdRandom,
+	"launch.music":  cmdLaunchMusic,
 
 	"shell": cmdShell,
 	"delay": cmdDelay,
@@ -84,6 +85,19 @@ type cmdEnv struct {
 	text          string
 	totalCommands int
 	currentIndex  int
+}
+
+func cmdLaunchMusic(env *cmdEnv) error {
+	_ = exec.Command("killall", "ffplay").Run()
+
+	cmd := exec.Command("ffplay", env.args)
+	cmd.Stdout = os.Stdout
+	err := cmd.Start()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func cmdSystem(env *cmdEnv) error {
