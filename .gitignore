@@ -1,27 +1,6 @@
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-*.test
-*.out
-
-go.work
-
 .vscode/
 .idea/
 
-*.db
-*.tar
-
 .env
-Taskfile.yml
-
-/bin
-/_bin
-/_scratch
-/_build
-/out
-/scripts/mister/build/_build
 
 .DS_Store
