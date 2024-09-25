@@ -21,10 +21,10 @@ The CC BY-SA 4.0 license allows you to use, remix, and share the assets, even co
 
 ## Contributors
 
-- **RetroCastle** &mdash; PCB designer &mdash; [Store](https://www.aliexpress.com/store/912024455) | [Twitter](https://twitter.com/zhangch93067765)
-- **TheTrain** &mdash; PCB designer &mdash; [GP2040-CE GitHub](https://github.com/OpenStickCommunity/GP2040-CE) | [Twitter](https://twitter.com/thetrain24)
-- **wizzo** &mdash; developer &mdash; [GitHub](https://github.com/wizzomafizzo) | [Patreon](https://patreon.com/wizzo) | [Store](https://ko-fi.com/wizzo) | [Web](https://wizzo.dev) | [Twitter](https://twitter.com/wizzomafizzo)
-- **Phoenix** &mdash; developer &mdash; [BuyMeACoffee](https://buymeacoffee.com/_phoenix_) | [X](https://x.com/HaciMehmetUsta)
+- **BedroomNinja** &mdash; [Store](https://ko-fi.com/ninja3dp) | [X](https://x.com/Bedroom_Ninja)
+- **TheTrain** &mdash; [GP2040-CE GitHub](https://github.com/OpenStickCommunity/GP2040-CE) | [X](https://x.com/thetrain24)
+- **wizzo** &mdash; [Web](https://wizzo.dev)
+- **Phoenix** &mdash; [BuyMeACoffee](https://buymeacoffee.com/_phoenix_) | [X](https://x.com/HaciMehmetUsta)
 
 ## Licenses
 
